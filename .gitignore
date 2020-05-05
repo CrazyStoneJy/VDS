@@ -1,3 +1,4 @@
 ./vds/node_moudles/*
 ./idea/*
-./.vscode
+./.vscode/*
+.vscode/*
