@@ -28,7 +28,7 @@ export default class OperatorTree {
             }
             // console.log('current stack size:', this.stack.size());
             // console.log('stack:', this.stack);
-            // this.stack.print();
+            this.stack.print();
             index++;
         }
         console.log('this stack size is:', this.stack.size());

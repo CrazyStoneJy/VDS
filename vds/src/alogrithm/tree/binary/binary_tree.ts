@@ -127,7 +127,48 @@ export default class BinaryTree<T> implements Tree<T> {
     }
 
     remove(value: T): boolean {
-        throw new Error("Method not implemented.");
+        if (!this.root) {
+            return false;
+        }
+        let current = this.root;
+        let parent = this.root.parent;
+        while (current) {
+            if (current.value === value) {
+                break;
+            } else if (value > current.value) {
+                parent = current;
+                current = current.right;
+            } else if (value < current.value) {
+                parent = current;
+                current = current.left;
+            } else {
+                // do nothing.
+            }
+        }
+
+        if (!current) {
+            return false;
+        }
+
+        // 要删除的节点没有左孩子和右孩子
+        if (!current.left && !current.right) {
+            if (current === this.root) {
+                this.root = null;
+                return true;
+            } else {
+                if (current === parent.left) {
+                    parent.left = null;
+                } else if (current === parent.right) {
+                    parent.right =null;
+                } else {
+                    // do nothing.
+                }
+            }
+        }
+        // todo
+        
+
+        return false;
     }
 
     contains(value: T): boolean {

@@ -14,21 +14,26 @@ describe("test", () => {
     //     expect(sum(1,2)).toBe(3);
     // });
 
-    // test('tree', () => {
+    test('tree', () => {
 
-    //     let binaryTree = new BinaryTree();
-    //     binaryTree.insert(5);
-    //     binaryTree.insert(3);
-    //     binaryTree.insert(7);
-    //     binaryTree.traversal();
+        let binaryTree = new BinaryTree();
 
-    //     console.log(binaryTree.contains(5));
-    //     console.log(binaryTree.contains(9));
+        binaryTree.insert(5);
+        binaryTree.insert(3);
+        binaryTree.insert(6);
+        binaryTree.insert(2);
+        binaryTree.insert(4);
+        binaryTree.insert(7);
+        binaryTree.insert(8);
+        binaryTree.traversal();
 
-    //     console.log('this tree max height:');
-    //     console.log(binaryTree.getHeight());
+        console.log(binaryTree.contains(5));
+        console.log(binaryTree.contains(9));
 
-    // });
+        console.log('this tree max height:');
+        console.log(binaryTree.getHeight());
+
+    });
 
     // test('stack', () => {
     //     let stack = new Stack();
@@ -49,11 +54,11 @@ describe("test", () => {
     //     console.log("compare str1 to str2:", (str1 > str2));
     // });
 
-    test('operator tree', () => {
-        let expressions = ['a', 'b', '+', 'c', 'd', 'e', '+', '*', '*'];
-        let operatorTree = new OperatorTree(expressions);
-        operatorTree.generate();
-    });
+    // test('operator tree', () => {
+    //     let expressions = ['a', 'b', '+', 'c', 'd', 'e', '+', '*', '*'];
+    //     let operatorTree = new OperatorTree(expressions);
+    //     operatorTree.generate();
+    // });
 
     // test('array',() => {
     //     let array = ["a", "b", "c"];
