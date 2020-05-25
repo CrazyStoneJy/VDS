@@ -1,7 +1,5 @@
 export default interface Tree<T> {
     
-    traversal(): void;
-
     print(): void;
 
     isEmpty(): boolean
@@ -13,5 +11,7 @@ export default interface Tree<T> {
     contains(value: T): boolean
 
     getHeight(): number
+
+    traverse(): void;
 
 }
