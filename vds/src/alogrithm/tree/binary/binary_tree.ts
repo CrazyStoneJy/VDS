@@ -15,14 +15,14 @@ export default class BinaryTree<T> implements Tree<T> {
     }
 
     public traverse(): void {
-        
+
         // 按广度优先遍历
         let treeNodeList: Array<BinaryTreeNode<T>> = [];
         treeNodeList.push(this.root);
 
         while (treeNodeList.length > 0) {
             let tempList = new Array<BinaryTreeNode<T>>();
-            
+
             for (let i = 0; i < treeNodeList.length; i++) {
 
                 const treeNode: BinaryTreeNode<T> = treeNodeList[i];
@@ -34,7 +34,7 @@ export default class BinaryTree<T> implements Tree<T> {
                     tempList.push(treeNode.right);
                 }
             }
-            
+
             treeNodeList = [...tempList];
         }
     }
@@ -75,8 +75,8 @@ export default class BinaryTree<T> implements Tree<T> {
 
         const height = this.getHeight();
         console.log('this is tree height is:', height);
-        const maxSpace = Math.pow(2, height - 1 ) - 1;
-       
+        const maxSpace = Math.pow(2, height - 1) - 1;
+
         this.printTree(maxSpace, this.root);
 
     }

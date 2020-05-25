@@ -21,36 +21,5 @@ describe("test", () => {
         binaryTree.insert(20);
         
         binaryTree.print();
-
-        // binaryTree.traverse();
-
-        // console.log(binaryTree.contains(5));
-        // console.log(binaryTree.contains(9));
-
-        // console.log('this tree max height:');
-        // console.log(binaryTree.getHeight());
-
     });
-
-    // test('stack', () => {
-    //     let stack = new Stack();
-    //     stack.push(3);
-    //     stack.push(5);
-    //     stack.push(6);
-    //     stack.push(7);
-    //     stack.print();
-    //     stack.pop();
-    //     stack.print();
-    //     stack.peek();
-    //     stack.print();
-    // });
-
-    // test('operator tree', () => {
-    //     let expressions = ['a', 'b', '+', 'c', 'd', 'e', '+', '*', '*'];
-    //     let operatorTree = new OperatorTree(expressions);
-    //     operatorTree.generate();
-    // });
-
-    
-
 });
