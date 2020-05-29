@@ -4,9 +4,49 @@ import Stack from '../alogrithm/stack/stack_impl';
 import OperatorTree from '../alogrithm/tree/binary/operator_tree';
 import BinaryTreeNode from '../alogrithm/tree/binary/tree_node';
 
-describe("test", () => {
+describe("tree", () => {
 
-    test('tree', () => {
+    test('tree basic operate', () => {
+        
+        let  binaryTree = new BinaryTree<number>();
+        binaryTree.insert(10);
+        binaryTree.insert(3);
+        binaryTree.insert(7);
+        binaryTree.insert(15);
+        binaryTree.insert(4);
+        
+        binaryTree.print();
+
+        console.log('binary tree is contains 5 ?', binaryTree.contains(5));
+
+        console.log('binary tree is contains 15 ?', binaryTree.contains(15));
+
+        const minTreeNode = binaryTree.findMix(binaryTree.root);
+        console.log('min tree node of binary tree :', minTreeNode ? minTreeNode.value : '');
+
+        const maxTreeNode = binaryTree.findMax(binaryTree.root);
+        console.log('max tree node of binary tree:', maxTreeNode ?maxTreeNode.value : '');
+
+        console.log('height of the binary tree:', binaryTree.getHeight());
+
+        console.log('the binary tree is empty?', binaryTree.isEmpty());
+
+        console.log('binary tree pre order');
+
+        binaryTree.preOrder();
+
+        console.log('binary tree in order');
+
+        binaryTree.inOrder();
+
+        console.log('binary tree post order');
+
+        binaryTree.postOrder();
+
+        console.log('binary tree breadth-first traverse');
+
+        binaryTree.traverse(); 
+
 
        
 

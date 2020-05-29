@@ -280,6 +280,7 @@ export default class BinaryTree<T> implements Tree<T> {
     }
 
     /**
+     * todo
      * merge two binary tree into a new one binary tree
      * @param first 
      * @param second 
@@ -316,7 +317,8 @@ export default class BinaryTree<T> implements Tree<T> {
      * find the min tree node in this subtree.
      * @param treeNode 
      */
-    private findMix(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+    public findMix(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+        if (!treeNode) return null;
         while (treeNode.left) {
             treeNode = treeNode.left;
         }
@@ -327,7 +329,8 @@ export default class BinaryTree<T> implements Tree<T> {
      * find the max tree node in this subtree.
      * @param treeNode 
      */
-    private findMax(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+    public findMax(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+        if (!treeNode) return null;
         if (treeNode.right) {
             return this.findMax(treeNode.right);
         }
