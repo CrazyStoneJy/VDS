@@ -43,56 +43,120 @@ export default class BinaryTree<T> implements Tree<T> {
         return new BinaryTreeNode(value);
     }
 
-    public preOrder(treeNode: BinaryTreeNode<T>): void {
+    public preOrder() {
+        this._preOrder(this.root);
+    }
+
+    public inOrder() {
+        this._inOrder(this.root);
+    }
+
+    public postOrder() {
+        this._postOrder(this.root);
+    }
+
+
+    private _preOrder(treeNode: BinaryTreeNode<T>): void {
         if (!treeNode) {
             return;
         }
         console.log(treeNode.value);
-        this.preOrder(treeNode.left);
-        this.preOrder(treeNode.right);
+        this._preOrder(treeNode.left);
+        this._preOrder(treeNode.right);
     }
 
-    public inOrder(treeNode: BinaryTreeNode<T>): void {
+    private _inOrder(treeNode: BinaryTreeNode<T>): void {
         if (!treeNode) {
             return;
         }
-        this.inOrder(treeNode.left);
+        this._inOrder(treeNode.left);
         console.log(treeNode.value);
-        this.inOrder(treeNode.right);
+        this._inOrder(treeNode.right);
     }
 
-    public postOrder(treeNode: BinaryTreeNode<T>): void {
+    private _postOrder(treeNode: BinaryTreeNode<T>): void {
         if (!treeNode) {
             return;
         }
-        this.postOrder(treeNode.left);
-        this.postOrder(treeNode.right);
+        this._postOrder(treeNode.left);
+        this._postOrder(treeNode.right);
         console.log(treeNode.value);
     }
 
 
     public print(): void {
-
-        const height = this.getHeight();
-        console.log('this is tree height is:', height);
-        const maxSpace = Math.pow(2, height - 1) - 1;
-
-        this.printTree(maxSpace, this.root);
-
+        this.show(this.root);
     }
 
-    private printTree(space: number, treeNode: BinaryTreeNode<T>) {
-        if (!treeNode) {
-            return;
+    private writeArray <T> (currNode: BinaryTreeNode<T>, rowIndex: number, columnIndex: number, res: string[][], treeDepth: number):void {
+        // 保证输入的树不为空
+        if (currNode == null) return;
+        // 先将当前节点保存到二维数组中
+        res[rowIndex][columnIndex] = currNode.value.toString();
+
+        // 计算当前位于树的第几层
+        const currLevel: number = Math.floor((rowIndex + 1) / 2);
+        // 若到了最后一层，则返回
+        if (currLevel == treeDepth) return;
+        // 计算当前行到下一行，每个元素之间的间隔（下一行的列索引与当前元素的列索引之间的间隔）
+        const gap: number = treeDepth - currLevel - 1;
+
+        // 对左儿子进行判断，若有左儿子，则记录相应的"/"与左儿子的值
+        if (currNode.left) {
+            res[rowIndex + 1][columnIndex - gap] = "/";
+            this.writeArray(currNode.left, rowIndex + 2, columnIndex - gap * 2, res, treeDepth);
         }
-        const str = this.appendBlank(space);
-        console.log(str + treeNode.value);
-        let leftSpace = Math.floor(space >> 1);
-        let rightSpace = Math.floor(space + space >> 1);
-        // console.log('left space:', leftSpace, ',right space:', rightSpace);
-        this.printTree(Math.floor(space >> 1), treeNode.left);
-        this.printTree(Math.floor(space + space >> 1), treeNode.right);
+
+        // 对右儿子进行判断，若有右儿子，则记录相应的"\"与右儿子的值
+        if (currNode.right) {
+            res[rowIndex + 1][columnIndex + gap] = "\\";
+            this.writeArray(currNode.right, rowIndex + 2, columnIndex + gap * 2, res, treeDepth);
+        }
     }
+
+
+    public show<T> (root: BinaryTreeNode<T>): void {
+        if (root == null) console.log("EMPTY!");
+        // 得到树的深度
+        const treeDepth: number = this.getHeight();
+
+        // 最后一行的宽度为2的（n - 1）次方乘3，再加1
+        // 作为整个二维数组的宽度
+        const arrayHeight: number = treeDepth * 2 - 1;
+        const arrayWidth: number = (2 << (treeDepth - 2)) * 3 + 1;
+        // 用一个字符串数组来存储每个位置应显示的元素
+
+        // fixme
+        let res: string[][] = [];
+        // 对数组进行初始化，默认为一个空格
+       
+        for (let i: number = 0; i < arrayHeight; i ++) {
+            let temp:string[] = [];
+            for (let j = 0; j < arrayWidth; j ++) {
+                temp.push(" ");
+            }
+            res.push(temp);
+        }
+
+        // 从根节点开始，递归处理整个树
+        this.writeArray(root, 0, Math.floor(arrayWidth / 2), res, treeDepth);
+
+        // 此时，已经将所有需要显示的元素储存到了二维数组中，将其拼接并打印即可
+        for (let j = 0; j < res.length; j++) {
+            let line: string[] = res[j];
+            let sb = '';
+            for (let i = 0; i < line.length; i ++) {
+                // sb.append(line[i]);
+                sb += line[i];
+                let str = line[i];
+                if (str.length > 1 && i <= str.length - 1) {
+                    i += line[i].length > 4 ? 2: line[i].length - 1;
+                }
+            }
+            console.log(sb);
+        }
+    }
+
 
     private appendBlank(num: number): string {
         let str = '';
@@ -161,13 +225,13 @@ export default class BinaryTree<T> implements Tree<T> {
             if (!treeNode.left) {
                 // 只有右孩子
                 this.transplant(treeNode, treeNode.right);
-            } else if (treeNode.right) {
+            } else if (!treeNode.right) {
                 // 只有左孩子
                 this.transplant(treeNode, treeNode.left);
             } else {
                 // 左右孩子都有
                 // 找到右子树中最大的节点,因为该节点是有右子树的，因此，该子树下的最大的节点肯定在右子树中，所以用@link{#findMax()}方法就可以
-                const maxTreeNode = this.findMax(treeNode);
+                const maxTreeNode = this.findMix(treeNode.right);
                 // 如果该子树下的最大节点的`parent`不是该节点
                 if (maxTreeNode.parent !== treeNode) {
                     this.transplant(maxTreeNode, maxTreeNode.right);

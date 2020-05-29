@@ -34,7 +34,7 @@ export default class OperatorTree {
         console.log('this stack size is:', this.stack.size());
         if (this.stack.size() === 1) {
             let finalTree = this.stack.pop();
-            finalTree.traversal();
+            finalTree.traverse();
             // finalTree.inOrder(finalTree.root);
         }
     }
