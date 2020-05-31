@@ -5,13 +5,16 @@ export default class BinaryTree<T> implements Tree<T> {
 
     root: BinaryTreeNode<T>;
     size: number = 0;
+    // todo 通过compareFunc比较binary tree中两个节点的大小
+    compareFunc: Function = null;
 
-    public constructor(initValue?: T) {
+    public constructor(initValue?: T, compareFunc: Function = null) {
         this.root = null;
         if (initValue) {
             this.root = this.createTreeNode(initValue);
             this.root.parent = null;
         }
+        this.compareFunc = compareFunc;
     }
 
     public traverse(): void {
@@ -157,16 +160,6 @@ export default class BinaryTree<T> implements Tree<T> {
         }
     }
 
-
-    private appendBlank(num: number): string {
-        let str = '';
-        for (let i = 0; i < num; i++) {
-            str += '*';
-        }
-        return str;
-    }
-
-
     public isEmpty(): boolean {
         return this.root === null && this.size === 0;
     }
@@ -223,25 +216,25 @@ export default class BinaryTree<T> implements Tree<T> {
         const treeNode: BinaryTreeNode<T> = this.get(this.root, value);
         if (treeNode) {
             if (!treeNode.left) {
-                // 只有右孩子
+                // 删除的节点只有右孩子
                 this.transplant(treeNode, treeNode.right);
             } else if (!treeNode.right) {
-                // 只有左孩子
+                // 删除的节点只有左孩子
                 this.transplant(treeNode, treeNode.left);
             } else {
-                // 左右孩子都有
-                // 找到右子树中最大的节点,因为该节点是有右子树的，因此，该子树下的最大的节点肯定在右子树中，所以用@link{#findMax()}方法就可以
-                const maxTreeNode = this.findMix(treeNode.right);
-                // 如果该子树下的最大节点的`parent`不是该节点
-                if (maxTreeNode.parent !== treeNode) {
-                    this.transplant(maxTreeNode, maxTreeNode.right);
-                    maxTreeNode.right = treeNode.right;
-                    maxTreeNode.right.parent = maxTreeNode;
+                // 删除的即诶单左右孩子都有
+                // 找到右子树中最小的节点
+                const minTreeNode = this.findMix(treeNode.right);
+                // 如果要删除得节点不是`minTreeNode`的`parent`
+                if (minTreeNode.parent !== treeNode) {
+                    this.transplant(minTreeNode, minTreeNode.right);
+                    minTreeNode.right = treeNode.right;
+                    minTreeNode.right.parent = minTreeNode;
                 }
-                // 将`maxTreeNode`替换`treeNode`
-                this.transplant(treeNode, maxTreeNode);
-                maxTreeNode.left = treeNode.left;
-                maxTreeNode.left.parent = maxTreeNode;
+                // 将`minTreeNode`替换`treeNode`
+                this.transplant(treeNode, minTreeNode);
+                minTreeNode.left = treeNode.left;
+                minTreeNode.left.parent = minTreeNode;
             }
             this.size--;
             return true;
@@ -386,7 +379,7 @@ export default class BinaryTree<T> implements Tree<T> {
             this.root = replacer;
         } else if (target === target.parent.left) {
             // 如果`target`是`parent`的左孩子，则将`replace`赋给`parent`的左孩子
-            target.parent.left = replacer;
+            target.parent.left = replacer; 
         } else {
             // 如果`target`是`parent`的右孩子，则将`replace`赋给`parent`的右孩子
             target.parent.right = replacer;
