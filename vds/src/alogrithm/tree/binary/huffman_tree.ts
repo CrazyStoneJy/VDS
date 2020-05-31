@@ -1,6 +1,7 @@
 import Strings from '../../../utils/strings';
 import BinaryTree from './binary_tree';
 import BinaryTreeNode from './tree_node';
+import Heap from '../../heap/binary_heap';
 
 /**
  * 哈夫曼树是用来压缩字符比特的一个数据结构。
@@ -30,7 +31,7 @@ export default class HuffmanTree {
         while (index < this.text.length) {
             index++;
             const char = this.text[index];
-            if (char) {
+            if (char && this.filter(char)) {
                 let charCount = map.get(char);
                 if (charCount) {
                     charCount += 1;
@@ -43,23 +44,55 @@ export default class HuffmanTree {
         return map;
     }
 
+    private filter(char: string): boolean {
+        const pattern = /^[A-Za-z]?$/
+        return pattern.test(char);
+    }
+
     create() {
         const map: Map<string, number> = this.getFrequentForChar();
         if (map && map.size > 0) {
-            let binaryTrees: HuffmanModel[] = [];
+            let heap = new Heap<HuffmanModel>(false, (target: HuffmanModel, source: HuffmanModel) => {
+                if (!target) {
+                    return false;
+                }
+                return target.priority <= source.priority;
+            });
             map.forEach((value: number, key: string) => {
                 console.log('key:', key, ',value:', value);
                 const tree = new BinaryTree<string>(key);
                 let model = new HuffmanModel(tree, value);
-                binaryTrees.push(model);
+                heap.add(model);
             });
-            console.log('binary tree:', binaryTrees);
+            // console.log('print heap:');
+            // heap.print();
+            const model: HuffmanModel = this.merge(heap);
+            // console.log('model:', model);
+            // console.log('print tree:');
+            // model.tree.traverse();
+            model.tree.print();
+            // console.log('tree height:', model.tree.getHeight());
         }
-    }  
+    }
 
-    merge(array: HuffmanModel[]): BinaryTree<string> {
-        
-        return null;
+    merge(heap: Heap<HuffmanModel>): HuffmanModel {
+        // todo 使用贪心算法合并森林为一个二叉树
+        let index = 0;
+        while (heap.size() > 1) {
+            let first: HuffmanModel = heap.remove();
+            let second: HuffmanModel = heap.remove();
+            console.log('index:',index,'first:', JSON.stringify(first));
+            console.log('index:',index,'second:', JSON.stringify(second));
+            let sumPriority = first.priority + second.priority;
+            let newTree: BinaryTree<string> = new BinaryTree<string>('*');
+            newTree.root.left = first.tree.root;
+            newTree.root.right = second.tree.root;
+            newTree.root.parent = null;
+            heap.add(new HuffmanModel(newTree, sumPriority));
+            // console.log('heap:', heap);
+            index++;
+        }
+        return heap.remove();
     }
 
 
@@ -71,9 +104,9 @@ export default class HuffmanTree {
 }
 
 class HuffmanModel {
-    
-    tree: BinaryTree<string>; 
-    priority: number; 
+
+    tree: BinaryTree<string>;
+    priority: number;
 
     constructor(tree: BinaryTree<string>, priority: number) {
         this.tree = tree;

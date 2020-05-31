@@ -49,10 +49,7 @@ describe("tree", () => {
 
     //     console.log('binary tree breadth-first traverse');
 
-    //     binaryTree.traverse(); 
-
-
-       
+    //     binaryTree.traverse();
 
     // });
 

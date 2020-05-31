@@ -5,7 +5,7 @@ export default class BinaryTree<T> implements Tree<T> {
 
     root: BinaryTreeNode<T>;
     size: number = 0;
-    // todo 通过compareFunc比较binary tree中两个节点的大小
+    // todo 通过compareFunc比较binary tree中两个节点的大小, 期望返回: 0, -1, 1
     compareFunc: Function = null;
 
     public constructor(initValue?: T, compareFunc: Function = null) {
@@ -13,6 +13,7 @@ export default class BinaryTree<T> implements Tree<T> {
         if (initValue) {
             this.root = this.createTreeNode(initValue);
             this.root.parent = null;
+            this.size++;
         }
         this.compareFunc = compareFunc;
     }
@@ -25,11 +26,11 @@ export default class BinaryTree<T> implements Tree<T> {
 
         while (treeNodeList.length > 0) {
             let tempList = new Array<BinaryTreeNode<T>>();
-
+            let sb = '';
             for (let i = 0; i < treeNodeList.length; i++) {
 
                 const treeNode: BinaryTreeNode<T> = treeNodeList[i];
-                console.log(treeNode.value);
+                sb += treeNode.value + " ";
                 if (treeNode.left) {
                     tempList.push(treeNode.left);
                 }
@@ -37,7 +38,7 @@ export default class BinaryTree<T> implements Tree<T> {
                     tempList.push(treeNode.right);
                 }
             }
-
+            console.log(sb);
             treeNodeList = [...tempList];
         }
     }
@@ -175,10 +176,10 @@ export default class BinaryTree<T> implements Tree<T> {
             let parent = current.parent;
 
             while (current) {
-                if (value < current.value) {
+                if (this.compare(value, current.value) < 0) {
                     parent = current;
                     current = current.left;
-                } else if (value > current.value) {
+                } else if (this.compare(value, current.value) > 0) {
                     parent = current;
                     current = current.right;
                 } else {
@@ -187,11 +188,11 @@ export default class BinaryTree<T> implements Tree<T> {
                 }
             }
 
-            if (value > parent.value) {
+            if (this.compare(value, parent.value) > 0) {
                 let treeNode = this.createTreeNode(value);
                 parent.right = treeNode;
                 treeNode.parent = parent;
-            } else if (value < parent.value) {
+            } else if (this.compare(value, parent.value) < 0) {
                 let treeNode = this.createTreeNode(value);
                 parent.left = treeNode;
                 treeNode.parent = parent;
@@ -200,6 +201,21 @@ export default class BinaryTree<T> implements Tree<T> {
             this.size++;
             return true;
         }
+    }
+
+    /**
+     * compare `target` to `source`.
+     * if there are equals, return 0,
+     * if `target` great than `source`, return 1,
+     * otherwise, return -1.
+     * @param target 
+     * @param source 
+     */
+    private compare(target: T,source: T): number {
+        if (this.compareFunc) {
+            return this.compareFunc(target, source);
+        }
+        return target > source ? 1 : (target < source ? -1 : 0);
     }
 
     /**
@@ -246,9 +262,9 @@ export default class BinaryTree<T> implements Tree<T> {
         if (!treeNode) {
             return null;
         }
-        if (value < treeNode.value) {
+        if (this.compare(value, treeNode.value) < 0) {
             return this.get(treeNode.left, value);
-        } else if (value > treeNode.value) {
+        } else if (this.compare(value, treeNode.value) > 0) {
             return this.get(treeNode.right, value);
         } else {
             return treeNode;
@@ -259,14 +275,12 @@ export default class BinaryTree<T> implements Tree<T> {
         let current = this.root;
         while (current) {
             let _value = current.value;
-            if (value === _value) {
+            if (this.compare(value, _value) === 0) {
                 return true;
-            } else if (value < _value) {
+            } else if (this.compare(value, _value) < 0) {
                 current = current.left;
-            } else if (value > _value) {
-                current = current.right;
             } else {
-                // do nothing.
+                current = current.right;
             }
         }
         return false;

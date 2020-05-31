@@ -36,8 +36,11 @@ export default class Heap<T> implements IHeap<T>{
      */
     private isBig: boolean = true;
 
-    constructor(big: boolean = true) {
+    private compareFunc: Function = null;
+
+    constructor(big: boolean = true, compareFunc: Function = null) {
         this.isBig = big;
+        this.compareFunc = compareFunc;
     }
     
     clear(): void {
@@ -62,6 +65,9 @@ export default class Heap<T> implements IHeap<T>{
     }
 
     private condition(target: T, source: T): boolean {
+        if (this.compareFunc) {
+            return this.compareFunc(target, source);
+        }
         return this.isBig ? target >= source : target <= source;
     }
 
@@ -131,7 +137,7 @@ export default class Heap<T> implements IHeap<T>{
                 let levelString = '';
                 for (let i = 0; i < array.length; i++) {
                     const currentIndex:number = array[i];
-                    levelString += this.list[currentIndex] + " ";
+                    levelString += (typeof this.list[currentIndex] !== 'string') ? (JSON.stringify(this.list[currentIndex]) + " ") : (this.list[currentIndex] + " ");
                     const leftIndex = currentIndex * 2 + 1;
                     const rightIndex = currentIndex * 2 + 2;
                     if (leftIndex < this.size()) {
