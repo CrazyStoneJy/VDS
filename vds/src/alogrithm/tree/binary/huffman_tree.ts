@@ -2,6 +2,7 @@ import Strings from '../../../utils/strings';
 import BinaryTree from './binary_tree';
 import BinaryTreeNode from './tree_node';
 import Heap from '../../heap/binary_heap';
+import Tree from '../tree';
 
 /**
  * 哈夫曼树是用来压缩字符比特的一个数据结构。
@@ -15,8 +16,10 @@ import Heap from '../../heap/binary_heap';
  *           M   p
  */
 
-export default class HuffmanTree {
+class HuffmanTree {
+
     text: string;
+    tree: BinaryTree<TreeModel>;
 
     constructor(text: string) {
         this.text = text;
@@ -31,7 +34,7 @@ export default class HuffmanTree {
         while (index < this.text.length) {
             index++;
             const char = this.text[index];
-            if (char && this.filter(char)) {
+            if (char && this.isChar(char)) {
                 let charCount = map.get(char);
                 if (charCount) {
                     charCount += 1;
@@ -44,12 +47,7 @@ export default class HuffmanTree {
         return map;
     }
 
-    private filter(char: string): boolean {
-        const pattern = /^[A-Za-z]?$/
-        return pattern.test(char);
-    }
-
-    create() {
+    create(): BinaryTree<TreeModel> {
         const map: Map<string, number> = this.getFrequentForChar();
         if (map && map.size > 0) {
             let heap = new Heap<HuffmanModel>(false, (target: HuffmanModel, source: HuffmanModel) => {
@@ -59,58 +57,95 @@ export default class HuffmanTree {
                 return target.priority <= source.priority;
             });
             map.forEach((value: number, key: string) => {
-                console.log('key:', key, ',value:', value);
-                const tree = new BinaryTree<string>(key);
+                const tree = new BinaryTree<TreeModel>(new TreeModel(key, value), this.compareFunc, this.printFunc);
                 let model = new HuffmanModel(tree, value);
                 heap.add(model);
             });
-            // console.log('print heap:');
-            // heap.print();
             const model: HuffmanModel = this.merge(heap);
-            // console.log('model:', model);
-            // console.log('print tree:');
-            // model.tree.traverse();
-            model.tree.print();
-            // console.log('tree height:', model.tree.getHeight());
+            this.tree = model.tree;
+            return model.tree;
         }
+        return null;
     }
 
-    merge(heap: Heap<HuffmanModel>): HuffmanModel {
-        // todo 使用贪心算法合并森林为一个二叉树
+    private merge(heap: Heap<HuffmanModel>): HuffmanModel {
+        // 使用贪心算法合并森林为一个二叉树
         let index = 0;
         while (heap.size() > 1) {
             let first: HuffmanModel = heap.remove();
             let second: HuffmanModel = heap.remove();
-            console.log('index:',index,'first:', JSON.stringify(first));
-            console.log('index:',index,'second:', JSON.stringify(second));
+            // console.log('index:',index,'first:', JSON.stringify(first));
+            // console.log('index:',index,'second:', JSON.stringify(second));
             let sumPriority = first.priority + second.priority;
-            let newTree: BinaryTree<string> = new BinaryTree<string>('*');
+            let newTree: BinaryTree<TreeModel> = new BinaryTree<TreeModel>(new TreeModel('*', sumPriority), this.compareFunc, this.printFunc);
             newTree.root.left = first.tree.root;
             newTree.root.right = second.tree.root;
             newTree.root.parent = null;
             heap.add(new HuffmanModel(newTree, sumPriority));
-            // console.log('heap:', heap);
             index++;
         }
         return heap.remove();
     }
 
+    private compareFunc = (target: TreeModel, source: TreeModel) => {
+        if (!target || !source) {
+            return false;
+        }
+        return target.priority > source.priority ? 1 : (target.priority < source.priority ? 1 : 0 );
+    }
+
+    private printFunc = (target: TreeModel) => {
+        return target.name;
+    }
 
     private isChar(char: string) {
         const pattern = /^[a-zA-Z]?$/;
         return pattern.test(char);
     }
 
+    /**
+     * 获取一个char对应的编码
+     * @param char 
+     */
+    public getCharCode(char: string) {
+        if (!this.tree) {
+            return -1;
+        }
+        let current = this.tree.root;
+        while (current) {
+            
+        }
+    }
+
 }
 
 class HuffmanModel {
 
-    tree: BinaryTree<string>;
+    tree: BinaryTree<TreeModel>;
     priority: number;
 
-    constructor(tree: BinaryTree<string>, priority: number) {
+    constructor(tree: BinaryTree<TreeModel>, priority: number) {
         this.tree = tree;
         this.priority = priority;
     }
 
 }
+
+class TreeModel {
+
+    name: string;
+    priority: number;
+    code: string;
+
+    constructor(name: string, priority: number,code: string = '') {
+        this.name = name;
+        this.priority = priority;
+        this.code = code;
+    }
+
+}
+
+export {
+    TreeModel,
+    HuffmanTree
+};

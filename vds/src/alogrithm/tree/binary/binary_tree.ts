@@ -5,10 +5,11 @@ export default class BinaryTree<T> implements Tree<T> {
 
     root: BinaryTreeNode<T>;
     size: number = 0;
-    // todo 通过compareFunc比较binary tree中两个节点的大小, 期望返回: 0, -1, 1
+    // 通过compareFunc比较binary tree中两个节点的大小, 期望返回: 0, -1, 1
     compareFunc: Function = null;
+    printFunc: Function = null;
 
-    public constructor(initValue?: T, compareFunc: Function = null) {
+    public constructor(initValue?: T, compareFunc: Function = null, printFunc: Function = null) {
         this.root = null;
         if (initValue) {
             this.root = this.createTreeNode(initValue);
@@ -16,6 +17,7 @@ export default class BinaryTree<T> implements Tree<T> {
             this.size++;
         }
         this.compareFunc = compareFunc;
+        this.printFunc = printFunc;
     }
 
     public traverse(): void {
@@ -96,7 +98,7 @@ export default class BinaryTree<T> implements Tree<T> {
         // 保证输入的树不为空
         if (currNode == null) return;
         // 先将当前节点保存到二维数组中
-        res[rowIndex][columnIndex] = currNode.value.toString();
+        res[rowIndex][columnIndex] = this.printFunc ? this.printFunc(currNode.value) : currNode.value.toString();
 
         // 计算当前位于树的第几层
         const currLevel: number = Math.floor((rowIndex + 1) / 2);
@@ -130,7 +132,6 @@ export default class BinaryTree<T> implements Tree<T> {
         const arrayWidth: number = (2 << (treeDepth - 2)) * 3 + 1;
         // 用一个字符串数组来存储每个位置应显示的元素
 
-        // fixme
         let res: string[][] = [];
         // 对数组进行初始化，默认为一个空格
        
@@ -150,7 +151,6 @@ export default class BinaryTree<T> implements Tree<T> {
             let line: string[] = res[j];
             let sb = '';
             for (let i = 0; i < line.length; i ++) {
-                // sb.append(line[i]);
                 sb += line[i];
                 let str = line[i];
                 if (str.length > 1 && i <= str.length - 1) {
