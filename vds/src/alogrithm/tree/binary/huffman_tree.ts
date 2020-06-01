@@ -20,9 +20,11 @@ class HuffmanTree {
 
     text: string;
     tree: BinaryTree<TreeModel>;
+    map: Map<string, string>;
 
     constructor(text: string) {
         this.text = text;
+        this.map = new Map<string, string>();
     }
 
     public getFrequentForChar() {
@@ -78,6 +80,7 @@ class HuffmanTree {
             // console.log('index:',index,'second:', JSON.stringify(second));
             let sumPriority = first.priority + second.priority;
             let newTree: BinaryTree<TreeModel> = new BinaryTree<TreeModel>(new TreeModel('*', sumPriority), this.compareFunc, this.printFunc);
+            
             newTree.root.left = first.tree.root;
             newTree.root.right = second.tree.root;
             newTree.root.parent = null;

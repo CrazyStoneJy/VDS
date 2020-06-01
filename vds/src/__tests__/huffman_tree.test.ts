@@ -11,6 +11,7 @@ describe('huffman tree test' , () => {
 
         const tree: BinaryTree<TreeModel> = huffmanTree.create();
         console.log('huffman tree:');
+        
         tree.print();
 
         
