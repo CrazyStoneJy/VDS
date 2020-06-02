@@ -27,6 +27,28 @@ class HuffmanTree {
         this.map = new Map<string, string>();
     }
 
+    public getHuffmanCode(): Map<string, string> {
+        
+        if (this.tree && this.tree.root) {
+            this.assignCode(this.tree.root);
+            return this.map;
+        }
+
+        return null;
+    }
+
+    private assignCode(treeNode: BinaryTreeNode<TreeModel>) {
+        if (treeNode.left) {
+            treeNode.left.value.code = treeNode.value.code + "0";
+            this.assignCode(treeNode.left);
+            treeNode.right.value.code = treeNode.value.code + "1";
+            this.assignCode(treeNode.right);
+        } else {
+            this.map.set(treeNode.value.name, treeNode.value.code);
+        }
+    }
+
+
     public getFrequentForChar() {
         if (Strings.isEmpty(this.text)) {
             throw new Error('text is empty');
@@ -58,6 +80,7 @@ class HuffmanTree {
                 }
                 return target.priority <= source.priority;
             });
+            // 将每个char创建森林。
             map.forEach((value: number, key: string) => {
                 const tree = new BinaryTree<TreeModel>(new TreeModel(key, value), this.compareFunc, this.printFunc);
                 let model = new HuffmanModel(tree, value);
@@ -106,20 +129,6 @@ class HuffmanTree {
         return pattern.test(char);
     }
 
-    /**
-     * 获取一个char对应的编码
-     * @param char 
-     */
-    public getCharCode(char: string) {
-        if (!this.tree) {
-            return -1;
-        }
-        let current = this.tree.root;
-        while (current) {
-            
-        }
-    }
-
 }
 
 class HuffmanModel {
@@ -140,7 +149,7 @@ class TreeModel {
     priority: number;
     code: string;
 
-    constructor(name: string, priority: number,code: string = '') {
+    constructor(name: string, priority: number,code: string = '0') {
         this.name = name;
         this.priority = priority;
         this.code = code;

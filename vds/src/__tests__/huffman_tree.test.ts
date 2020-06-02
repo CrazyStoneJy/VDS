@@ -14,6 +14,8 @@ describe('huffman tree test' , () => {
         
         tree.print();
 
+        console.log('get huffman code:', huffmanTree.getHuffmanCode());
+
         
 
     });
