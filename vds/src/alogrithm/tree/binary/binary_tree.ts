@@ -1,14 +1,44 @@
 import Tree from "../tree";
 import BinaryTreeNode from "./tree_node";
 
+/**
+ * 二叉搜索树的简单实现
+ */
 export default class BinaryTree<T> implements Tree<T> {
 
+    /**
+     * 二叉树的根
+     */
     root: BinaryTreeNode<T>;
+    /**
+     * 二叉树的元素个数
+     */
     size: number = 0;
-    // 通过compareFunc比较binary tree中两个节点的大小, 期望返回: 0, -1, 1
+    /**
+     * (target: T, source: T) => {
+     *    return {number};
+     * }
+     * 
+     * 通过compareFunc比较binary tree中两个节点的大小, 期望返回: 0, -1, 1
+     * 如果返回0,表示`target`===`source`;
+     * 返回-1，表示`target`<`source`;
+     * 返回1，表示`target`>`source`;
+     * 
+     */
     compareFunc: Function = null;
+    /**
+     * 
+     * 打印元素的方法回调
+     * 
+     */
     printFunc: Function = null;
 
+    /**
+     * 
+     * @param initValue 初始化树的根元素
+     * @param compareFunc 树元素之间比较的方法
+     * @param printFunc 打印元素的方法回调
+     */
     public constructor(initValue?: T, compareFunc: Function = null, printFunc: Function = null) {
         this.root = null;
         if (initValue) {
@@ -20,8 +50,10 @@ export default class BinaryTree<T> implements Tree<T> {
         this.printFunc = printFunc;
     }
 
+    /**
+     * 广度优先遍历
+     */
     public traverse(): void {
-
         // 按广度优先遍历
         let treeNodeList: Array<BinaryTreeNode<T>> = [];
         treeNodeList.push(this.root);
@@ -45,18 +77,31 @@ export default class BinaryTree<T> implements Tree<T> {
         }
     }
 
+    /**
+     * 创建一个`value`的二叉树节点
+     * @param value 树元素
+     */
     public createTreeNode(value: T): BinaryTreeNode<T> {
         return new BinaryTreeNode(value);
     }
 
+    /**
+     * 前序遍历
+     */
     public preOrder() {
         this._preOrder(this.root);
     }
 
+    /**
+     * 中序遍历
+     */
     public inOrder() {
         this._inOrder(this.root);
     }
 
+    /**
+     * 后序遍历
+     */
     public postOrder() {
         this._postOrder(this.root);
     }
@@ -89,7 +134,9 @@ export default class BinaryTree<T> implements Tree<T> {
         console.log(treeNode.value);
     }
 
-
+    /**
+     * 按树形打印二叉树
+     */
     public print(): void {
         this.show(this.root);
     }
@@ -161,10 +208,17 @@ export default class BinaryTree<T> implements Tree<T> {
         }
     }
 
+    /**
+     * 判断二叉树是否为空
+     */
     public isEmpty(): boolean {
         return this.root === null && this.size === 0;
     }
 
+    /**
+     * 插入元素
+     * @param value 
+     */
     public insert(value: T): boolean {
         if (this.root === null) {
             this.root = this.createTreeNode(value);
@@ -219,6 +273,8 @@ export default class BinaryTree<T> implements Tree<T> {
     }
 
     /**
+     *  删除元素
+     * 
      *  一共有四种情况。
      *  1. 删除的节点为叶子节点，直接删除
      *  2. 删除的节点只有左孩子
@@ -258,6 +314,11 @@ export default class BinaryTree<T> implements Tree<T> {
         return false;
     }
 
+    /**
+     * 通过`value`获取二叉树的节点
+     * @param treeNode 
+     * @param value 
+     */
     public get(treeNode: BinaryTreeNode<T>, value: T): BinaryTreeNode<T> {
         if (!treeNode) {
             return null;
@@ -271,6 +332,10 @@ export default class BinaryTree<T> implements Tree<T> {
         }
     }
 
+    /**
+     * 判断二叉树时是否包含`value`
+     * @param value 
+     */
     public contains(value: T): boolean {
         let current = this.root;
         while (current) {
@@ -309,6 +374,9 @@ export default class BinaryTree<T> implements Tree<T> {
 
     }
 
+    /**
+     * 获取树的高度
+     */
     public getHeight(): number {
         return this.getMaxDeep(this.root);
     }
