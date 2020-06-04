@@ -4,6 +4,10 @@ import AbstractBinaryTree from './abstract_binary_tree';
 
 export default class BinaryTree<T> extends AbstractBinaryTree<T> {
 
+    /**
+     * 插入元素
+     * @param value 
+     */
     public insert(value: T): boolean {
         if (this.root === null) {
             this.root = this.createTreeNode(value);
@@ -45,6 +49,8 @@ export default class BinaryTree<T> extends AbstractBinaryTree<T> {
 
 
     /**
+     *  删除元素
+     * 
      *  一共有四种情况。
      *  1. 删除的节点为叶子节点，直接删除
      *  2. 删除的节点只有左孩子
@@ -84,6 +90,11 @@ export default class BinaryTree<T> extends AbstractBinaryTree<T> {
         return false;
     }
 
+    /**
+     * 通过`value`获取二叉树的节点
+     * @param treeNode 
+     * @param value 
+     */
     public get(treeNode: BinaryTreeNode<T>, value: T): BinaryTreeNode<T> {
         if (!treeNode) {
             return null;

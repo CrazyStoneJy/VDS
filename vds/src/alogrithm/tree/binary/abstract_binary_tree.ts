@@ -3,14 +3,35 @@ import Tree from '../tree';
 import BinaryTreeIterator from '../interface/intreface_iterator';
 import TreePrint from '../interface_print';
 
-export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTreeIterator,TreePrint  {
+export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTreeIterator, TreePrint {
 
     root: BinaryTreeNode<T> = null;
     size: number = 0;
-     // 通过compareFunc比较binary tree中两个节点的大小, 期望返回: 0, -1, 1
-     compareFunc: Function = null;
-     printFunc: Function = null;
+    /**
+     * (target: T, source: T) => {
+     *    return {number};
+     * }
+     * 
+     * 通过compareFunc比较binary tree中两个节点的大小, 期望返回: 0, -1, 1
+     * 如果返回0,表示`target`===`source`;
+     * 返回-1，表示`target`<`source`;
+     * 返回1，表示`target`>`source`;
+     * 
+     */
+    compareFunc: Function = null;
+    /**
+     * 
+     * 打印元素的方法回调
+     * 
+     */
+    printFunc: Function = null;
 
+    /**
+     * 
+     * @param initValue 初始化树的根元素
+     * @param compareFunc 树元素之间比较的方法
+     * @param printFunc 打印元素的方法回调
+     */
     public constructor(initValue?: T, compareFunc: Function = null, printFunc: Function = null) {
         this.root = null;
         if (initValue) {
@@ -23,9 +44,9 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
     }
 
     print(): void {
-        this.show(this.root); 
+        this.show(this.root);
     }
-    
+
     isEmpty(): boolean {
         return this.root === null && this.size === 0;
     }
@@ -34,7 +55,7 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
         return new BinaryTreeNode(value);
     }
 
-    private show<T> (root: BinaryTreeNode<T>): void {
+    private show<T>(root: BinaryTreeNode<T>): void {
         if (root == null) console.log("EMPTY!");
         // 得到树的深度
         const treeDepth: number = this.getHeight();
@@ -47,10 +68,10 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
 
         let res: string[][] = [];
         // 对数组进行初始化，默认为一个空格
-       
-        for (let i: number = 0; i < arrayHeight; i ++) {
-            let temp:string[] = [];
-            for (let j = 0; j < arrayWidth; j ++) {
+
+        for (let i: number = 0; i < arrayHeight; i++) {
+            let temp: string[] = [];
+            for (let j = 0; j < arrayWidth; j++) {
                 temp.push(" ");
             }
             res.push(temp);
@@ -63,18 +84,18 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
         for (let j = 0; j < res.length; j++) {
             let line: string[] = res[j];
             let sb = '';
-            for (let i = 0; i < line.length; i ++) {
+            for (let i = 0; i < line.length; i++) {
                 sb += line[i];
                 let str = line[i];
                 if (str.length > 1 && i <= str.length - 1) {
-                    i += line[i].length > 4 ? 2: line[i].length - 1;
+                    i += line[i].length > 4 ? 2 : line[i].length - 1;
                 }
             }
             console.log(sb);
         }
     }
 
-    private writeArray <T> (currNode: BinaryTreeNode<T>, rowIndex: number, columnIndex: number, res: string[][], treeDepth: number):void {
+    private writeArray<T>(currNode: BinaryTreeNode<T>, rowIndex: number, columnIndex: number, res: string[][], treeDepth: number): void {
         // 保证输入的树不为空
         if (currNode == null) return;
         // 先将当前节点保存到二维数组中
@@ -108,7 +129,7 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
      * @param target 
      * @param source 
      */
-    protected compare(target: T,source: T): number {
+    protected compare(target: T, source: T): number {
         if (this.compareFunc) {
             return this.compareFunc(target, source);
         }
@@ -153,7 +174,7 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
         this._postOrder(treeNode.right);
         console.log(treeNode.value);
     }
-    
+
     public contains(value: T): boolean {
         let current = this.root;
         while (current) {
@@ -179,7 +200,7 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
         }
         return Math.max(this.getMaxDeep(treeNode.left), this.getMaxDeep(treeNode.right)) + 1;
     }
-    
+
     public traverse(): void {
 
         // 按广度优先遍历

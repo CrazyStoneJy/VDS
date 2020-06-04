@@ -58,7 +58,7 @@ class HuffmanTree {
         while (index < this.text.length) {
             index++;
             const char = this.text[index];
-            if (char && this.isChar(char)) {
+            if (char) {
                 let charCount = map.get(char);
                 if (charCount) {
                     charCount += 1;
@@ -71,7 +71,7 @@ class HuffmanTree {
         return map;
     }
 
-    create(): BinaryTree<TreeModel> {
+    create(): Map<string, string> {
         const map: Map<string, number> = this.getFrequentForChar();
         if (map && map.size > 0) {
             let heap = new Heap<HuffmanModel>(false, (target: HuffmanModel, source: HuffmanModel) => {
@@ -88,7 +88,8 @@ class HuffmanTree {
             });
             const model: HuffmanModel = this.merge(heap);
             this.tree = model.tree;
-            return model.tree;
+            // return model.tree;
+            return this.getHuffmanCode();
         }
         return null;
     }
