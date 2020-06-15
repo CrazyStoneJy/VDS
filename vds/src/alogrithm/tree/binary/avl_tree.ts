@@ -1,6 +1,6 @@
 import Tree from '../tree';
 import AbstractBinaryTree from './abstract_binary_tree';
-import BinaryTreeNode from './tree_node';
+import BinaryTreeNode from '../entity/tree_node';
 /**
  * AVL Tree 
  * 

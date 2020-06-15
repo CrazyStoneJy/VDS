@@ -1,6 +1,6 @@
 import Strings from '../../../utils/strings';
 import BinaryTree from './binary_tree';
-import BinaryTreeNode from './tree_node';
+import BinaryTreeNode from '../entity/tree_node';
 import Heap from '../../heap/binary_heap';
 import Tree from '../tree';
 

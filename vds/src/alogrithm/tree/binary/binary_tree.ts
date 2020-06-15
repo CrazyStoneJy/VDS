@@ -1,5 +1,5 @@
 import Tree from "../tree";
-import BinaryTreeNode from "./tree_node";
+import BinaryTreeNode from "../entity/tree_node";
 import AbstractBinaryTree from './abstract_binary_tree';
 
 export default class BinaryTree<T> extends AbstractBinaryTree<T> {

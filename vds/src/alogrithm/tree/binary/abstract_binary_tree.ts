@@ -1,4 +1,4 @@
-import BinaryTreeNode from './tree_node';
+import BinaryTreeNode from '../entity/tree_node';
 import Tree from '../tree';
 import BinaryTreeIterator from '../interface/intreface_iterator';
 import TreePrint from '../interface_print';
@@ -87,7 +87,7 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
             for (let i = 0; i < line.length; i++) {
                 sb += line[i];
                 let str = line[i];
-                if (str.length > 1 && i <= str.length - 1) {
+                if (str && str.length > 1 && i <= str.length - 1) {
                     i += line[i].length > 4 ? 2 : line[i].length - 1;
                 }
             }
@@ -99,7 +99,7 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
         // 保证输入的树不为空
         if (currNode == null) return;
         // 先将当前节点保存到二维数组中
-        res[rowIndex][columnIndex] = this.printFunc ? this.printFunc(currNode.value) : currNode.value.toString();
+        res[rowIndex][columnIndex] = this.printFunc ? this.printFunc(currNode) : currNode.value.toString();
 
         // 计算当前位于树的第几层
         const currLevel: number = Math.floor((rowIndex + 1) / 2);
