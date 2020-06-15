@@ -11,11 +11,22 @@ describe('red black tree', () => {
         });
         tree.insert(6);
         tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
         tree.insert(5);
         tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
         tree.insert(4);
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
         tree.insert(3);
-        // tree.print();
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.insert(2);
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.insert(1);
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
     });
 
 });

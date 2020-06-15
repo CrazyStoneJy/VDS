@@ -37,9 +37,6 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
     public insert(value: T): boolean {
         let current = this.root;
         let parent = this.nil;
-        if (current) {
-            console.log(current);
-        }
         while (current !== this.nil && current) {
             parent = current;
             if (value < current.value) {
@@ -62,6 +59,7 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         newTreeNode.right = this.nil;
 
         this.insertFix(newTreeNode);
+        this.size++;
 
         return true;
     }
@@ -104,7 +102,137 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
     }
 
     public remove(value: T): boolean {
-        throw new Error("Method not implemented.");
+        const treeNode: BinaryTreeNode<T> = this.get(this.root, value);
+        if (!treeNode) {
+            return false;
+        }
+
+        let current = treeNode;
+        let x = null;
+        let currentColor = current.color;
+        if (treeNode.left === this.nil) {
+            x = treeNode.right;
+            this.transplant(treeNode, treeNode.right);
+        } else if (treeNode.right === this.nil) {
+            x = treeNode.left;
+            this.transplant(treeNode, treeNode.left);
+        } else {
+            current = this.findMix(treeNode.right);
+            currentColor = current.color;
+            x = current.right;
+            if (current.parent === treeNode) {
+                x.parent = current;
+            } else {
+                this.transplant(current, current.right);
+                current.right = treeNode.right;
+                current.right.parent = current;
+            }
+            this.transplant(treeNode, current);
+            current.left = treeNode.left;
+            current.left.parent = current;
+            current.color = treeNode.color;
+        }
+        if (current.color === Color.Black) {
+            this.deleteFix(x);
+        }
+
+        this.size--;
+        return true;
+    }
+
+
+    private deleteFix(treeNode: BinaryTreeNode<T>): void {
+        while (treeNode !== this.nil && treeNode.color === Color.Black) {
+            let w: BinaryTreeNode<T> = null;
+            if (treeNode === treeNode.parent.left) {
+                w = treeNode.parent.right;
+                if (w.color === Color.Red) {
+                    w.color = Color.Black;
+                    treeNode.parent.color = Color.Red;
+                    this.leftRotate(treeNode.parent);
+                    w = treeNode.parent.right;
+                }
+                if (w.left.color === Color.Black && w.right.color === Color.Black) {
+                    w.color = Color.Red;
+                    treeNode = treeNode.parent;
+                } else if (w.right.color === Color.Black) {
+                    w.left.color = Color.Black;
+                    w.color = Color.Red;
+                    this.rightRotate(w);
+                    w = treeNode.parent.right;
+                }
+                w.color = treeNode.parent.color;
+                treeNode.parent.color = Color.Black;
+                w.right.color = Color.Black;
+                this.leftRotate(treeNode.parent);
+                treeNode = this.root;
+            } else {
+                w = treeNode.parent.left;
+                if (w.color === Color.Red) {
+                    w.color = Color.Black;
+                    treeNode.parent.color = Color.Red;
+                    this.rightRotate(treeNode.parent);
+                    w = treeNode.parent.left;
+                }
+                if (w.left.color === Color.Black && w.right.color === Color.Black) {
+                    w.color = Color.Red;
+                    treeNode = treeNode.parent;
+                } else if (w.left.color === Color.Black) {
+                    w.right.color = Color.Black;
+                    w.color = Color.Red;
+                    this.leftRotate(w);
+                    w = treeNode.parent.left;
+                }
+                w.color = treeNode.parent.color;
+                treeNode.parent.color = Color.Black;
+                w.left.color = Color.Black;
+                this.rightRotate(treeNode.parent);
+                treeNode = this.root;
+            }
+        }
+        treeNode.color = Color.Black;
+    }
+
+
+    /**
+     * find the min tree node in this subtree.
+     * @param treeNode 
+     */
+    public findMix(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+        if (!treeNode) return null;
+        while (treeNode.left) {
+            treeNode = treeNode.left;
+        }
+        return treeNode;
+    }
+
+    /**
+     * 通过`value`获取二叉树的节点
+     * @param treeNode 
+     * @param value 
+     */
+    public get(treeNode: BinaryTreeNode<T>, value: T): BinaryTreeNode<T> {
+        if (!treeNode) {
+            return null;
+        }
+        if (this.compare(value, treeNode.value) < 0) {
+            return this.get(treeNode.left, value);
+        } else if (this.compare(value, treeNode.value) > 0) {
+            return this.get(treeNode.right, value);
+        } else {
+            return treeNode;
+        }
+    }
+
+    private transplant(u: BinaryTreeNode<T>, v: BinaryTreeNode<T>): void {
+        if (u.parent === this.nil) {
+            this.root = v;
+        } else if (u === u.parent.left) {
+            u.parent.left = v;
+        } else {
+            u.parent.right = v;
+        }
+        v.parent = u.parent;
     }
 
     private createRBNode(value: T) {
@@ -144,14 +272,14 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         const x: BinaryTreeNode<T> = y.left;
 
         y.left = x.right;
-        if (x.right) {
+        if (x.right !== this.nil) {
             y.left.parent = y;
         }
 
         // 将y的父节点赋值给x
         x.parent = y.parent;
         // 将x与y的父节点连接起来
-        if (!y.parent) {
+        if (y.parent === this.nil) {
             this.root = x;
         } else if (y === y.parent.left) {
             y.parent.left = x;
@@ -180,13 +308,13 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         
         // 将y的左孩子赋值给x的右孩子
         x.right = y.left;
-        if (y.left) {
+        if (y.left !== this.nil) {
             y.left.parent = x;
         }
 
         // 将y连接到x.parent
         y.parent = x.parent;
-        if (!x.parent) {
+        if (x.parent === this.nil) {
             this.root = y;
         } else if (x === x.parent.left){
             x.parent.left = y;

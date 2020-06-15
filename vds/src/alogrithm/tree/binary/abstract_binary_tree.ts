@@ -1,7 +1,7 @@
 import BinaryTreeNode from '../entity/tree_node';
 import Tree from '../tree';
 import BinaryTreeIterator from '../interface/intreface_iterator';
-import TreePrint from '../interface_print';
+import TreePrint from '../interface/interface_print';
 
 export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTreeIterator, TreePrint {
 
