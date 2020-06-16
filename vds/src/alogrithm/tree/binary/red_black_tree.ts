@@ -60,6 +60,7 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         newTreeNode.color = Color.Red;
 
         this.insertFix(newTreeNode);
+        this.size++;
 
         return true;
     }
@@ -138,12 +139,106 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
     public remove(value: T): boolean {
         const treeNode: BinaryTreeNode<T> = this.get(this.root, value);
         if (!treeNode) {
-            console.log(`red-black-tree hasn't this treeNode ${value}`);
             return false;
         }
-        // todo 
-        
+
+        let current = treeNode;
+        let x = null;
+        let currentColor = current.color;
+        if (treeNode.left === this.nil) {
+            x = treeNode.right;
+            this.transplant(treeNode, treeNode.right);
+        } else if (treeNode.right === this.nil) {
+            x = treeNode.left;
+            this.transplant(treeNode, treeNode.left);
+        } else {
+            current = this.findMix(treeNode.right);
+            currentColor = current.color;
+            x = current.right;
+            if (current.parent === treeNode) {
+                x.parent = current;
+            } else {
+                this.transplant(current, current.right);
+                current.right = treeNode.right;
+                current.right.parent = current;
+            }
+            this.transplant(treeNode, current);
+            current.left = treeNode.left;
+            current.left.parent = current;
+            current.color = treeNode.color;
+        }
+        if (currentColor === Color.Black) {
+            this.deleteFix(x);
+        }
+
+        this.size--;
         return true;
+    }
+
+
+    private deleteFix(treeNode: BinaryTreeNode<T>): void {
+        while (treeNode !== this.nil && treeNode.color === Color.Black) {
+            let w: BinaryTreeNode<T> = null;
+            if (treeNode === treeNode.parent.left) {
+                w = treeNode.parent.right;
+                if (w.color === Color.Red) {
+                    w.color = Color.Black;
+                    treeNode.parent.color = Color.Red;
+                    this.leftRotate(treeNode.parent);
+                    w = treeNode.parent.right;
+                }
+                if (w.left.color === Color.Black && w.right.color === Color.Black) {
+                    w.color = Color.Red;
+                    treeNode = treeNode.parent;
+                } else if (w.right.color === Color.Black) {
+                    w.left.color = Color.Black;
+                    w.color = Color.Red;
+                    this.rightRotate(w);
+                    w = treeNode.parent.right;
+                }
+                w.color = treeNode.parent.color;
+                treeNode.parent.color = Color.Black;
+                w.right.color = Color.Black;
+                this.leftRotate(treeNode.parent);
+                treeNode = this.root;
+            } else {
+                w = treeNode.parent.left;
+                if (w.color === Color.Red) {
+                    w.color = Color.Black;
+                    treeNode.parent.color = Color.Red;
+                    this.rightRotate(treeNode.parent);
+                    w = treeNode.parent.left;
+                }
+                if (w.left.color === Color.Black && w.right.color === Color.Black) {
+                    w.color = Color.Red;
+                    treeNode = treeNode.parent;
+                } else if (w.left.color === Color.Black) {
+                    w.right.color = Color.Black;
+                    w.color = Color.Red;
+                    this.leftRotate(w);
+                    w = treeNode.parent.left;
+                }
+                w.color = treeNode.parent.color;
+                treeNode.parent.color = Color.Black;
+                w.left.color = Color.Black;
+                this.rightRotate(treeNode.parent);
+                treeNode = this.root;
+            }
+        }
+        treeNode.color = Color.Black;
+    }
+
+
+    /**
+     * find the min tree node in this subtree.
+     * @param treeNode 
+     */
+    public findMix(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+        if (treeNode === this.nil) return null;
+        while (treeNode.left !== this.nil) {
+            treeNode = treeNode.left;
+        }
+        return treeNode;
     }
 
     /**
@@ -268,6 +363,4 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         }
         v.parent = u.parent;
     }
-
-
 }

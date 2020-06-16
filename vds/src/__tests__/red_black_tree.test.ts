@@ -9,21 +9,30 @@ describe('red black tree', () => {
         tree.setPrintFunc((treeNode: BinaryTreeNode<number>) => {
             return treeNode ? (treeNode.value ? treeNode.value : '') + Color[treeNode.color][0] : '';
         });
-        tree.insert(5);
-        tree.print();
-        console.log('>>>>>>>>>>>>>>>>>>>>>');
         tree.insert(6);
         tree.print();
-        console.log('>>>>>>>>>>>>>>>>>>>>>');
-        tree.insert(7);
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.insert(5);
         tree.print();
-        console.log('>>>>>>>>>>>>>>>>>>>>>');
-        tree.insert(8);
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.insert(4);
         tree.print();
-        console.log('>>>>>>>>>>>>>>>>>>>>>');
-        tree.insert(9);
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.insert(3);
         tree.print();
-        
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.insert(2);
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.insert(1);
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.remove(2);
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
+        tree.remove(3);
+        tree.print();
+        console.log('>>>>>>>>>>>>>>>>>>>');
     });
 
 });
