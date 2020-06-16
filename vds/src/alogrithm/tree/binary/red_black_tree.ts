@@ -37,9 +37,6 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
     public insert(value: T): boolean {
         let current = this.root;
         let parent = this.nil;
-        if (current) {
-            console.log(current);
-        }
         while (current !== this.nil && current) {
             parent = current;
             if (value < current.value) {
@@ -60,51 +57,111 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
 
         newTreeNode.left = this.nil;
         newTreeNode.right = this.nil;
+        newTreeNode.color = Color.Red;
 
         this.insertFix(newTreeNode);
 
         return true;
     }
 
+    private getParent(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+        if (treeNode) {
+            return treeNode.parent;
+        }
+        return null;
+    }
+
+    /**
+     * 对树的修正
+     * @param treeNode 
+     */
     private insertFix(treeNode: BinaryTreeNode<T>): void {
-        while (treeNode.parent.color === Color.Red) {
-            if (treeNode.parent === treeNode.parent.parent.left) {
-                // todo 列一下case
-                const uncleNode = treeNode.parent.parent.right;
+        // 父节点
+        let parentNode = null;
+        while ((parentNode = (this.getParent(treeNode))).color === Color.Red) {
+            // 先祖节点
+            let grandNode = this.getParent(parentNode);
+            if (!grandNode) {
+                return;
+            }
+            if (parentNode === grandNode.left) {
+                // 叔父节点
+                let uncleNode = grandNode.right;
+                // case1 parentNode & uncleNode color both red
+                // 将`parentNode`的`color`置为黑色
+                // 将`uncleNode`的`color`置为黑色
+                // 将`grandNode`的`color`置为红色
+                // 将指针移到`grandNode`节点处
                 if (uncleNode.color === Color.Red) {
-                     treeNode.parent.color = Color.Black;
-                     uncleNode.color = Color.Black;
-                     treeNode = treeNode.parent.parent;
-                } else if (treeNode === treeNode.parent.right) {
-                    treeNode = treeNode.parent;
+                    parentNode.color = Color.Black;
+                    uncleNode.color = Color.Black;
+                    grandNode.color = Color.Red;
+                    treeNode = grandNode;
+                    continue;
+                }
+                // case2 该节点是父节点的右孩子
+                // 将指针移到`parentNode`节点处，然后左旋
+                if (treeNode === parentNode.right) {
+                    treeNode = parentNode;
                     this.leftRotate(treeNode);
                 }
-                treeNode.parent.color = Color.Black;
-                treeNode.parent.parent.color = Color.Red;
-                this.rightRotate(treeNode.parent.parent);
+                // case3 
+                // `parentNode`颜色置为黑色
+                // `grandNode`颜色置为红色
+                // 右旋`grandNode`
+                parentNode.color = Color.Black;
+                grandNode.color = Color.Red;
+                this.rightRotate(grandNode);
             } else {
-                if (treeNode.parent === treeNode.parent.parent.right) {
-                    const uncleNode = treeNode.parent.parent.left;
+                if (parentNode === grandNode.right) {
+                    const uncleNode = grandNode.left;
                     if (uncleNode.color === Color.Red) {
-                        treeNode.parent.color = Color.Black;
+                        parentNode.color = Color.Black;
                         uncleNode.color = Color.Black;
-                        treeNode = treeNode.parent.parent;
-                    } else if (treeNode === treeNode.parent.left) {
-                        treeNode = treeNode.parent;
+                        grandNode.color = Color.Red;
+                        treeNode = grandNode;
+                        continue;
+                    }
+                    if (treeNode === parentNode.left) {
+                        treeNode = parentNode;
                         this.rightRotate(treeNode);
                     }
-                    treeNode.parent.color = Color.Black;
-                    treeNode.parent.parent.color = Color.Red;
-                    this.leftRotate(treeNode.parent.parent);
+                    parentNode.color = Color.Black;
+                    grandNode.color = Color.Red;
+                    this.leftRotate(grandNode);
                 }
-                // with 'right' and 'left' change.
             }
         }
         this.root.color = Color.Black;
     }
 
     public remove(value: T): boolean {
-        throw new Error("Method not implemented.");
+        const treeNode: BinaryTreeNode<T> = this.get(this.root, value);
+        if (!treeNode) {
+            console.log(`red-black-tree hasn't this treeNode ${value}`);
+            return false;
+        }
+        // todo 
+        
+        return true;
+    }
+
+    /**
+     * 通过`value`获取二叉树的节点
+     * @param treeNode 
+     * @param value 
+     */
+    public get(treeNode: BinaryTreeNode<T>, value: T): BinaryTreeNode<T> {
+        if (!treeNode) {
+            return null;
+        }
+        if (this.compare(value, treeNode.value) < 0) {
+            return this.get(treeNode.left, value);
+        } else if (this.compare(value, treeNode.value) > 0) {
+            return this.get(treeNode.right, value);
+        } else {
+            return treeNode;
+        }
     }
 
     private createRBNode(value: T) {
@@ -144,14 +201,14 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         const x: BinaryTreeNode<T> = y.left;
 
         y.left = x.right;
-        if (x.right) {
+        if (x.right !== this.nil) {
             y.left.parent = y;
         }
 
         // 将y的父节点赋值给x
         x.parent = y.parent;
         // 将x与y的父节点连接起来
-        if (!y.parent) {
+        if (y.parent === this.nil) {
             this.root = x;
         } else if (y === y.parent.left) {
             y.parent.left = x;
@@ -177,18 +234,18 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
      */
     private leftRotate(x: BinaryTreeNode<T>): BinaryTreeNode<T> {
         const y: BinaryTreeNode<T> = x.right;
-        
+
         // 将y的左孩子赋值给x的右孩子
         x.right = y.left;
-        if (y.left) {
+        if (y.left !== this.nil) {
             y.left.parent = x;
         }
 
         // 将y连接到x.parent
         y.parent = x.parent;
-        if (!x.parent) {
+        if (x.parent === this.nil) {
             this.root = y;
-        } else if (x === x.parent.left){
+        } else if (x === x.parent.left) {
             x.parent.left = y;
         } else {
             x.parent.right = y;
@@ -201,6 +258,16 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         return y;
     }
 
+    transplant(u: BinaryTreeNode<T>, v: BinaryTreeNode<T>):void {
+        if (u.parent === this.nil) {
+            this.root = v;
+        } else if (u === u.parent.left) {
+            u.parent.left = v;
+        } else {
+            u.parent.right = v;
+        }
+        v.parent = u.parent;
+    }
 
 
 }
