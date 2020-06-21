@@ -136,6 +136,10 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         this.root.color = Color.Black;
     }
 
+    /**
+     * fixme sometimes has problem.
+     * @param value 
+     */
     public remove(value: T): boolean {
         const treeNode: BinaryTreeNode<T> = this.get(this.root, value);
         if (!treeNode) {
@@ -168,7 +172,7 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
             current.color = treeNode.color;
         }
         if (currentColor === Color.Black) {
-            this.deleteFix(x);
+            this.removeFix(x);
         }
 
         this.size--;
@@ -176,8 +180,8 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
     }
 
 
-    private deleteFix(treeNode: BinaryTreeNode<T>): void {
-        while (treeNode !== this.nil && treeNode.color === Color.Black) {
+    private removeFix(treeNode: BinaryTreeNode<T>): void {
+        while (treeNode !== this.root && treeNode.color === Color.Black) {
             let w: BinaryTreeNode<T> = null;
             if (treeNode === treeNode.parent.left) {
                 w = treeNode.parent.right;
@@ -240,6 +244,19 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
         }
         return treeNode;
     }
+
+   /**
+     * find the min tree node in this subtree.
+     * @param treeNode 
+     */
+    public findMax(treeNode: BinaryTreeNode<T>): BinaryTreeNode<T> {
+        if (treeNode === this.nil) return null;
+        while (treeNode.right !== this.nil) {
+            treeNode = treeNode.right;
+        }
+        return treeNode;
+    }
+
 
     /**
      * 通过`value`获取二叉树的节点
@@ -326,6 +343,11 @@ export default class RedBlackTree<T> extends AbstractBinaryTree<T> {
      *  T1  y     rotate left (x)      x  T3
      *     / \   ---------------->    / \
      *    T2  T3                     T1 T2  
+     * 
+     * 注意：将节点B与节点A交换位置，需要通过两步。
+     * 1.将 B.parent = A.parent; 
+     * 2.将 A.parent.left = B; or A.parent.right = B;
+     * 
      */
     private leftRotate(x: BinaryTreeNode<T>): BinaryTreeNode<T> {
         const y: BinaryTreeNode<T> = x.right;
