@@ -55,7 +55,7 @@ export default abstract class AbstractBinaryTree<T> implements Tree<T>, BinaryTr
         return new BinaryTreeNode(value);
     }
 
-    private show<T>(root: BinaryTreeNode<T>): void {
+    public show<T>(root: BinaryTreeNode<T>): void {
         if (root == null) console.log("EMPTY!");
         // 得到树的深度
         const treeDepth: number = this.getHeight();

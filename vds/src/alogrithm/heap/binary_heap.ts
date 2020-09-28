@@ -64,6 +64,14 @@ export default class Heap<T> implements IHeap<T>{
         return true;
     }
 
+    public peek(): T {
+        if (this.list && this.list.length > 0) {
+            let element: T = this.list[0];
+            return element;
+        }
+        return null;
+    }
+
     private condition(target: T, source: T): boolean {
         if (this.compareFunc) {
             return this.compareFunc(target, source);
