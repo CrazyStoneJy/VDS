@@ -1,5 +1,5 @@
 import { Graph, Edge } from './Graph';
-import Heap from '../heap/binary_heap';
+import { KruskalMST } from './mst/Kruskal';
 import fs from 'fs';
 import readline from 'readline';
 
@@ -28,7 +28,7 @@ class MiniSpanningTree {
     }
 
     async generateEdge() {
-        const stream = fs.createReadStream('/Users/crazystone/study_code/VDS/vds/src/alogrithm/graph/graph.txt');
+        const stream = fs.createReadStream('/Users/crazystone/study_code/VDS/vds/src/alogrithm/graph/graph1.txt');
         const lines = readline.createInterface({
             input: stream,
             crlfDelay: Infinity
@@ -53,31 +53,8 @@ class MiniSpanningTree {
      * the min spanning tree of kruskal algorithem.
      */
     kruskal() {
-        const edges:Array<Edge<string>> = this.graph.edges;
-        let minSpanningTreeEdges = new Array();
-        if (edges && edges.length > 0) {
-            let heap = new Heap<Edge<string>>(false, (target:Edge<string>, dest: Edge<string>) => {
-                // console.log('>>>target:', target, ',dest:', dest);
-                if (!target || !dest) {
-                    return false;
-                }
-                return target.weight < dest.weight;
-            });
-            for (let edge of edges) {
-                console.log('>>>weight:', edge.weight);
-                heap.add(edge);
-            }
-            heap.print();
-            while (heap.size()!== 1) {
-                let edge: Edge<string> = heap.remove();
-                // 如何判断图是否有环
-                // if (!hasCycle()) {
-                //     minSpanningTreeEdges.push(edge);
-                // } else {
-                    
-                // }
-            }
-        }
+        let kruskal = new KruskalMST();
+        kruskal.mst(this.graph);
     }
 
     /**

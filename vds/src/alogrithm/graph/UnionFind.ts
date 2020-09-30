@@ -22,7 +22,8 @@ class VertexRecord <T>{
 class UnionFind<T>{
 
     find(parent: VertexRecord<T>[], vertex: T): T {
-        let index: number = this.findIndex(parent, vertex);
+        let vertexRecord: VertexRecord<T> = this.findVertex(parent, vertex);
+        let index: number = vertexRecord.index;
         if (index === -1) {
             console.log('can not find this value');
             return vertex;
@@ -33,19 +34,20 @@ class UnionFind<T>{
         return vertex;
     }
 
-    findIndex(records: VertexRecord<T>[], vertex: T): number {
-        for (let record of records) {
+    findVertex(records: VertexRecord<T>[], vertex: T): VertexRecord<T> {
+        for (let i = 0; i < records.length; i++) {
+            let record = records[i];
             if (record.vertex === vertex) {
-                return record.index;
+                return record;
             }
         }
-        return -1;
+        return null;
     }
 
     union(parent: VertexRecord<T>[], x: T, y: T): void {
-        let yIndex: number = this.findIndex(parent, y);
-        let xIndex: number = this.findIndex(parent, x);
-        parent[yIndex] = new VertexRecord(x, xIndex);
+        let yVertexRecord: VertexRecord<T> = this.findVertex(parent, y);
+        let xVertexRecord: VertexRecord<T> = this.findVertex(parent, x);
+        parent[yVertexRecord.index] = new VertexRecord(yVertexRecord.vertex, xVertexRecord.index);
     }
 
     hasCycle(graph: Graph<T>): boolean {
@@ -55,6 +57,7 @@ class UnionFind<T>{
         }
 
         let parent: VertexRecord<T>[] = new Array(graph.vertexCount);
+        
         // init parent array, every element his parent is itself.
         for (let i = 0; i < graph.vertexCount; i++) {
             parent[i] = new VertexRecord(graph.vers[i], i);
@@ -65,16 +68,30 @@ class UnionFind<T>{
             let edge = edges[i];
             let x = this.find(parent, edge.start);
             let y = this.find(parent, edge.end);
+
+            // print vertext record
+            this.printVertexRecord(parent);
+
             //check if source vertex and destination vertex belongs to the same set
             // if in same set then cycle has been detected else combine them into one set
             if (x === y) {
                 return true;
             } else {
-                this.union(parent, x, y);
+                this.union(parent, edge.start, edge.end);
             }
         }
+
         return false;
     }
+
+    printVertexRecord(records: VertexRecord<T>[]) {
+        let string = '';
+        for (let record of records) {
+            string += "vertex:" + record.vertex + ",index:" + record.index + ";";
+        }
+        console.log(string);
+    }
+
 }
 
 export {

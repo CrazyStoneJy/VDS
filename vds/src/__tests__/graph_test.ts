@@ -31,7 +31,9 @@ describe('graph', () => {
     test('min spanning tree', async () => {
         let spanningTree = new MiniSpanningTree();
         await spanningTree.generateTree();
+        console.log('>>>>>> kruskal mst start >>>>>>');
         spanningTree.kruskal();
+        console.log('>>>>>> kruskal mst end >>>>>>');
     });
 
     test('has cycle', () => {
