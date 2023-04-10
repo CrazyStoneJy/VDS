@@ -1,8 +1,3 @@
-import fs from 'fs';
-interface IQueue {
-
-}
-
-export {
-    IQueue
+export interface IQueue {
+    // en
 }

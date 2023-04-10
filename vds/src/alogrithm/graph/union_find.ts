@@ -1,4 +1,4 @@
-import { Graph, Edge } from './Graph';
+import { Graph, Edge } from './graph';
 
 /**
  * this class is used to find cycle int undirction graph.

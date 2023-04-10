@@ -1,4 +1,4 @@
-import { Graph, Edge } from './Graph';
+import { Graph, Edge } from './graph';
 import { KruskalMST } from './mst/Kruskal';
 import fs from 'fs';
 import readline from 'readline';

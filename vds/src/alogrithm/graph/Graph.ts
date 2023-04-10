@@ -1,9 +1,9 @@
-import { fstat } from "fs";
-
+import { DepthFirstSearch, IDFS } from './dfs';
+import { BreadthFirstPath, IBFS } from './bfs';
 /**
  * 使用邻接链表的方式进行存储
  */
-class Graph<T>{
+class Graph<T> implements IDFS, IBFS, IGraph<T>{
 
     // 顶点的个数
     vertexCount = 0;
@@ -17,7 +17,7 @@ class Graph<T>{
     vers: Array<T> = new Array<T>();
     edges: Array<Edge<T>> = new Array();
 
-    constructor(vers?: Array<T>, edges?: Array<Edge<T>>, bidirectional?: boolean) {
+    constructor(vers?: Array<T>, edges?: Array<Edge<T>>, bidirectional: boolean = true) {
         if (vers && vers.length > 0) {
             this.addVertexs(vers);
         }
@@ -25,6 +25,14 @@ class Graph<T>{
             this.addEdges(edges);
         }
         this.bidirectional = bidirectional;
+    }
+
+    removeEdge(edge: Edge<T>): void {
+        throw new Error('Method not implemented.');
+    }
+
+    hasEdge(edge: Edge<T>): boolean {
+        return this.edges.includes(edge);
     }
 
     addVertexs(vers: T[]) {
@@ -70,7 +78,7 @@ class Graph<T>{
                 this.addVertex(end);
             }
             this.adjs.get(start).push(end);
-            if (this.bidirectional) {
+            if (this.bidirectional === true) {
                 this.adjs.get(end).push(start);
             }
         }
@@ -107,75 +115,17 @@ class Graph<T>{
      * @param ver 遍历开始的根结点
      */
     dfs() {
-        if (this.vers && this.vers.length > 0) {
-            let visit: Map<T, boolean> = new Map<T, boolean>();
-            for (let i = 0; i < this.vers.length; i++) {
-                let ver = this.vers[i];
-                visit.set(ver, false);
-            }
-            
-            let vertexList = new Array<T>();
-            this._dfs(this.vers[0], visit, vertexList);
-            this.traversePrint(vertexList);
-        }
-    }
-
-    traversePrint(vertexList: Array<T>) {
-        var sb = '';
-        if (vertexList && vertexList.length > 0) {
-            vertexList.forEach((value: T, index: number) => {
-                sb += value + "->";
-            });
-            console.log(sb.substring(0, sb.length - 2));
-        }
-    }
-
-    _dfs(ver: T, visit: Map<T, boolean>, vertexList: Array<T>) {
-        visit.set(ver, true);
-        let edges: Array<T> = this.adjs.get(ver);
-        // console.log('current vertex:', ver);
-        vertexList.push(ver);
-        for (let ver of edges) {
-            if (visit.get(ver) === false) {
-                this._dfs(ver, visit, vertexList);
-            }
-        }
+        let delegete = new DepthFirstSearch(this, this.vers[0]);
+        delegete.dfs();
     }
 
     /**
      * 广度优先遍历 -> 类似于二叉树的按层次遍历
      */
     bfs() {
-        if (this.vers && this.vers.length > 0) {
-            let visit: Map<T, boolean> = new Map<T, boolean>();
-            for (let i = 0; i < this.vers.length; i++) {
-                let ver = this.vers[i];
-                visit.set(ver, false);
-            }
-            let vertexList = new Array<T>();
-            this._bfs(this.vers[0], visit, vertexList);
-            this.traversePrint(vertexList);
-        }
+       let delegete = new BreadthFirstPath(this, this.vers[0]);
+       delegete.bfs();
     }
-
-    _bfs(ver: T, visit: Map<T, boolean>, vertexList: Array<T>) {
-        let queue = new Array<T>();
-        visit.set(ver, true);
-        queue.push(ver);
-        vertexList.push(ver);
-        while (queue.length > 0) {
-            let _ver = queue.shift();
-            let edges = this.adjs.get(_ver);
-            for (let edge of edges) {
-                if (visit.get(edge) === false) {
-                    visit.set(edge, true);
-                    queue.push(edge);
-                    vertexList.push(edge);
-                }
-            }
-        }
-    }
-
 
 }
 
@@ -188,6 +138,31 @@ class Edge<T>{
         this.end = end;
         this.weight = weight;
     }
+}
+
+/**
+ * 图的抽象接口
+ */
+interface IGraph<T> {
+
+    // 增加一组顶点
+    addVertexs(vers: T[]): void;
+
+    // 增加顶点
+    addVertex(ver: T): void;
+
+    // 增加一组边
+    addEdges(edges?: Array<Edge<T>>): void;
+
+    // 增加边
+    addEdge(edge: Edge<T>): void;
+
+    // 删除一个边
+    removeEdge(edge: Edge<T>): void;
+
+    // 检查是否有`edge`这个边
+    hasEdge(edge: Edge<T>): void;
+
 }
 
 export {

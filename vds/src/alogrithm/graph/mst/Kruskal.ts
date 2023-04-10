@@ -1,4 +1,4 @@
-import { Graph, Edge } from '../Graph';
+import { Graph, Edge } from '../graph';
 import Heap from '../../heap/binary_heap';
 
 class VertexRecord <T>{
@@ -11,6 +11,11 @@ class VertexRecord <T>{
     }
 }
 
+/**
+ * kruskal算法是将所有边按照`weight`大小排列，每次尝试将最小的`weight`的边，并且这个边和已经在list中的边不能形成环，
+ * 则将其加入到list,否则忽略跳过，直致所有边遍历完成。
+ * 
+ */
 class KruskalMST<T> {
 
     find(parent: VertexRecord<T>[], vertex: T): T {

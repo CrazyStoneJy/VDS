@@ -1,4 +1,4 @@
-import Stack from '../../stack/stack_impl';
+import Stack from '../../stack/stack';
 import BinaryTree from './binary_tree';
 export default class OperatorTree {
 

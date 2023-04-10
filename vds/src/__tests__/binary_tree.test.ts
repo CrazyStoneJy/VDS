@@ -1,6 +1,6 @@
 
 import BinaryTree from '../alogrithm/tree/binary/binary_tree';
-import Stack from '../alogrithm/stack/stack_impl';
+import Stack from '../alogrithm/stack/stack';
 import OperatorTree from '../alogrithm/tree/binary/operator_tree';
 import BinaryTreeNode from '../alogrithm/tree/entity/tree_node';
 
