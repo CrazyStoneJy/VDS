@@ -36,7 +36,7 @@ class BreadthFirstPath<T> implements IBFS{
 
         while(!queue.isEmpty()) {
             let ver: T = queue.dequeue();
-            let adj = this.graph.adjs.get(ver);
+            let adj: T[] | Array<T> = this.graph.adjs.get(ver);
 
             // traverse all vertex of this adj.
             for (let vertex of adj) {

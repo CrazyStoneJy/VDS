@@ -1,12 +1,40 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+import App from './App';
+import Sudoku from './ui/Sudoku';
+import BST from './ui/bst';
+import NQueen from './ui/nqueen';
+
+import './index.css';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App/>,
+  },
+  {
+    path: '/sudoku',
+    element: <Sudoku/>
+  },
+  {
+    path: '/bst',
+    element: <BST/>
+  },
+  {
+    path: '/nqueen',
+    element: <NQueen/>
+  }
+]);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>,
   document.getElementById('root')
 );

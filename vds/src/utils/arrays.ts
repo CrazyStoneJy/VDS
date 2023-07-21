@@ -1,21 +1,39 @@
+import Cell from "../ui/Sudoku/cell";
 
 
-export function isEmpty(obj: any) {
+function isEmpty(obj: any) {
     return !Array.isArray(obj);
 }
 
-export function clone(array: number[]): number[] {
+function clone(array: number[]): number[] {
     if (!array || array.length === 0) {
         return [];
     }
-    let newArray = [];
+    const newArray = [];
     for (let i = 0; i < array.length; i++) {
         newArray[i] = array[i];
     }
     return newArray;
 }
 
-export function shuffle(array: number[]): void {
+function isEquals(array1: number[], array2: number[]) {
+    if (!array1 || !array2) {
+        return false;
+    }
+    if (array1.length !== array2.length) {
+        return false;
+    }
+    array1.sort();
+    array2.sort();
+    for (let i = 0; i < array1.length; i++) {
+        if (array1[i] !== array2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function shuffle(array: number[]): void {
     if (isEmpty(array)) {
         return;
     }
@@ -34,3 +52,57 @@ function swap(array: number[], target: number, dest: number) {
     array[dest] = temp;
 }
 
+function print(array: number[]): String {
+    let out = '[';
+    for (let i = 0; i < array.length; i++) {
+        out += array[i] + ((i !== array.length - 1) ? ", " : "");
+    }
+    out += ']';
+    console.log(out);
+    return out;
+}
+
+function print2DArray(array: number[][]): String {
+    if (isEmpty(array)) {
+        return;
+    }
+    let out = '[';
+    for (let i = 0; i < array.length; i++) {
+        out += '\n\t['
+        for (let j = 0; j < array[i].length; j++) {
+            out += array[i][j] + ((j !== array[i].length - 1) ? ", " : "");
+        }
+        out += ']\n';
+    }
+    out += ']';
+    console.log(out);
+    return out;
+}
+
+function print2DCellArray(array: Cell[][]): String {
+    if (isEmpty(array)) {
+        return;
+    }
+    let out = '[';
+    for (let i = 0; i < array.length; i++) {
+        out += '\n\t['
+        for (let j = 0; j < array[i].length; j++) {
+            const num = array[i][j].isShowNum ? array[i][j].num : '';
+            out += num + ((j !== array[i].length - 1) ? ", " : "");
+        }
+        out += ']\n';
+    }
+    out += ']';
+    console.log(out);
+    return out;
+}
+
+export {
+    isEmpty,
+    clone,
+    shuffle,
+    print,
+    print2DArray,
+    print2DCellArray,
+    isEquals
+}
