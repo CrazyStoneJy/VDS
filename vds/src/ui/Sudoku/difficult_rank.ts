@@ -1,6 +1,6 @@
 enum DifficultRank {
-    EASY = 1,
-    MID = 5,
+    EASY = 15,
+    MID = 30,
     DIFFICULT = 45
 }
 
